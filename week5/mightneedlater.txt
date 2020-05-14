@@ -1,0 +1,68 @@
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Sentiment
+{
+    public static double sentiment(String review, String reviewFilename)
+    {
+        // The review does not have a rating (i.e. a score).
+        // This method will rate the review by finding the score for each of the words
+        // and averaging them together.
+
+        String [] rev = review.substring(0, review.length()).split(" "); //list of words you have to get average score of
+
+        try
+        {
+            Double total = 0.00;    //total of all scores
+            Double numOfRevs = 0.00; 
+            Double score = 0.00;
+            String word = "";
+
+            Scanner file = new Scanner(new File(reviewFilename));
+
+            for(int i=0; i < rev.length; i++)
+            {
+                score = 0.00;   //total score added up // resets every word
+                numOfRevs = 0.00;   //number of reviews//resets every word
+                word = rev[i];
+                while(file.hasNextLine())
+                {
+                    String line = file.nextLine();
+                    String [] fileLine = line.substring(0,line.length()).split(" "); //takes review one by one and turns it into an array
+
+                    for(int j=1; j < fileLine.length; j++) //go through each word in file line
+                    {
+                        if(fileLine[j].equalsIgnoreCase(word))
+                        {
+                            score += Double.parseDouble(fileLine[0]);
+                            numOfRevs++;
+                        }
+                    }
+                }
+                
+                if(numOfRevs > 0)
+                    total += score / numOfRevs;     // happens once for each word//adds the average score of each word and adds it to total which will be averaged later
+
+                file = new Scanner(new File(reviewFilename));
+            }
+
+            if(total == 0)
+                return -1.00;
+
+            else
+            {
+                Double average = total / rev.length;
+                return average;
+            }
+
+        }
+
+        catch(FileNotFoundException e)
+        {
+            return -1.00;
+        }
+
+    }
+}
